@@ -1,0 +1,23 @@
+---
+import { Content as About } from '../data/about.md';
+import { SITE, githubUrl, githubLabel, mailto } from '../site';
+
+interface Props { showAbout?: boolean }
+const { showAbout = true } = Astro.props;
+---
+<section id="about" class="about-contact" aria-label="About and contact">
+  {showAbout && (
+    <div>
+      <h2 class="label">About</h2>
+      <About />
+    </div>
+  )}
+  <div>
+    <h2 class="label">Get in touch</h2>
+    <div class="contact-links">
+      <a href={mailto}>{SITE.email}</a>
+      <a href={githubUrl}>{githubLabel}</a>
+      <a href="/rss.xml">RSS feed</a>
+    </div>
+  </div>
+</section>

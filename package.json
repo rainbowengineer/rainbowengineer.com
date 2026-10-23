@@ -1,0 +1,23 @@
+{
+  "name": "rainbowengineer",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "astro build && wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource/red-hat-display": "^5.3.0",
+    "@fontsource/red-hat-mono": "^5.3.0",
+    "@fontsource/red-hat-text": "^5.3.0",
+    "astro": "^7.4.1"
+  },
+  "devDependencies": {
+    "wrangler": "^4.152.0"
+  },
+  "private": true,
+  "type": "module"
+}

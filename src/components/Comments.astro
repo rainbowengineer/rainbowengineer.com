@@ -1,0 +1,30 @@
+---
+// giscus comments backed by GitHub Discussions. Hidden until SITE.giscus is filled in.
+import { SITE } from '../site';
+const g = SITE.giscus;
+const enabled = Boolean(g.repo && g.repoId && g.categoryId);
+---
+{enabled && (
+  <section class="comments" aria-labelledby="comments-heading">
+    <h2 id="comments-heading">Comments</h2>
+    <div class="giscus"></div>
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={g.repo}
+      data-repo-id={g.repoId}
+      data-category={g.category}
+      data-category-id={g.categoryId}
+      data-mapping="pathname"
+      data-strict="1"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="transparent_dark"
+      data-lang="en"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    ></script>
+  </section>
+)}

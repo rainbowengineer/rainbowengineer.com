@@ -1,0 +1,39 @@
+---
+import { Image } from 'astro:assets';
+import { type Project, accentFor, projectLabel, STATUS_LABEL, isoDate } from '../lib/projects';
+
+interface Props { project: Project; eager?: boolean }
+const { project, eager = false } = Astro.props;
+const { data } = project;
+const href = `/projects/${project.id}/`;
+---
+<article class="card">
+  <a class="card-img" href={href} tabindex="-1" aria-hidden="true">
+    <Image
+      src={data.cover}
+      alt=""
+      widths={[480, 720, 960, 1280]}
+      sizes="(min-width: 1100px) 600px, 100vw"
+      loading={eager ? 'eager' : 'lazy'}
+    />
+  </a>
+  <div class="card-body">
+    <span class:list={['label', `c-${accentFor(project)}`]}>{projectLabel(data.number)}</span>
+    <h3><a href={href}>{data.title}</a></h3>
+    <p>{data.summary}</p>
+  </div>
+  <div class="card-strip">
+    <div>
+      <span class="label-sm">Status</span>
+      <span class="status"><span class:list={['dot', data.status]} aria-hidden="true"></span>{STATUS_LABEL[data.status]}</span>
+    </div>
+    <div>
+      <span class="label-sm">Updated</span>
+      <time datetime={isoDate(data.updated)}>{isoDate(data.updated)}</time>
+    </div>
+    <div>
+      <span class="label-sm">Files</span>
+      {data.repo ? <a href={data.repo}>GitHub ↗</a> : <span class="c-muted">Soon</span>}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,6 @@
+# Tools page. One entry per tool; `id` must be unique. `url` is optional.
+# - id: trim-router
+#   name: Trim router
+#   category: Shop
+#   note: What you use it for and whether you'd buy it again.
+[]

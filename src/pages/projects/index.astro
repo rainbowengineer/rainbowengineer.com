@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getProjects } from '../../lib/projects';
+
+const projects = await getProjects();
+---
+<Base title="Projects" description="Hardware and software projects, with photos, write-ups and source files.">
+  <div class="page-head">
+    <span class="label">{projects.length} {projects.length === 1 ? 'project' : 'projects'}</span>
+    <h1>Projects</h1>
+    <p>Each one has a write-up of what it is, why I built it, how it works and what went wrong, with the files on GitHub.</p>
+  </div>
+  {projects.length > 0 ? (
+    <div class="cards">
+      {projects.map((p, i) => <ProjectCard project={p} eager={i < 2} />)}
+    </div>
+  ) : (
+    <p class="empty">The first write-ups are on their way.</p>
+  )}
+</Base>

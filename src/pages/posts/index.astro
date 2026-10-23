@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { isoDate } from '../../lib/projects';
+
+const posts = (await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<Base title="Posts" description="Posts and reviews.">
+  <div class="page-head">
+    <span class="label">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
+    <h1>Posts</h1>
+  </div>
+  {posts.length > 0 ? (
+    <ul class="rows" role="list" style="margin: 0; padding: 0; list-style: none">
+      {posts.map((post) => (
+        <li>
+          <div class="meta">
+            <span class:list={['label', post.data.kind === 'review' ? 'c-peach' : 'c-lavender']}>{post.data.kind === 'review' ? 'Review' : 'Post'}</span>
+            <time class="label" datetime={isoDate(post.data.date)}>{isoDate(post.data.date)}</time>
+          </div>
+          <div class="meta" style="gap: 6px">
+            <h2><a href={`/posts/${post.id}/`}>{post.data.title}</a></h2>
+            <p>{post.data.summary}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="empty">No posts yet.</p>
+  )}
+</Base>

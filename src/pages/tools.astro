@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const tools = await getCollection('tools');
+---
+<Base title="Tools" description="The tools I use in the workshop and at the desk, and what I think of them.">
+  <div class="page-head">
+    <span class="label">{tools.length} {tools.length === 1 ? 'tool' : 'tools'}</span>
+    <h1>Tools</h1>
+    <p>What I use in the workshop and at the desk, and what I think of each one.</p>
+  </div>
+  {tools.length > 0 ? (
+    <ul class="rows" role="list" style="margin: 0; padding: 0; list-style: none">
+      {tools.map(({ data }) => (
+        <li>
+          <div class="meta">
+            <span class="label c-teal">{data.category}</span>
+            <h2>{data.url ? <a href={data.url}>{data.name} ↗</a> : data.name}</h2>
+          </div>
+          <p>{data.note}</p>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="empty">Nothing listed yet.</p>
+  )}
+</Base>

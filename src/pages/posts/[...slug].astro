@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Comments from '../../components/Comments.astro';
+import { isoDate } from '../../lib/projects';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => import.meta.env.DEV || !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props { post: CollectionEntry<'posts'> }
+const { post } = Astro.props;
+const { data } = post;
+const { Content } = await render(post);
+---
+<Base title={data.title} description={data.summary} image={data.cover?.src} footerSpaced>
+  <div class="project-page">
+    <header class="post-head">
+      <span class:list={['label', data.kind === 'review' ? 'c-peach' : 'c-lavender']} style="font-size: 13px">
+        {data.kind === 'review' ? 'Review' : 'Post'} · <time datetime={isoDate(data.date)}>{isoDate(data.date)}</time>
+      </span>
+      <h1>{data.title}</h1>
+      <p>{data.summary}</p>
+    </header>
+    {data.cover && (
+      <Image src={data.cover} alt={data.coverAlt ?? ''} widths={[720, 1280, 1920]} sizes="(min-width: 1376px) 1280px, 100vw" loading="eager" />
+    )}
+    <article class="post-body">
+      <div class="prose"><Content /></div>
+      <Comments />
+    </article>
+  </div>
+</Base>

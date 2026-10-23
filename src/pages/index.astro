@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import AboutContact from '../components/AboutContact.astro';
+import { getProjects } from '../lib/projects';
+import { SITE, githubUrl, githubLabel, mailto } from '../site';
+
+const projects = await getProjects();
+---
+<Base>
+  <section class="home-hero">
+    <h1>Things I've built, and how I built them.</h1>
+    <dl class="info">
+      <div><dt class="label">Name</dt><dd>{SITE.name}</dd></div>
+      <div><dt class="label">Based in</dt><dd>{SITE.basedIn}</dd></div>
+      <div><dt class="label">Writes about</dt><dd>{SITE.writesAbout}</dd></div>
+      <div><dt class="label">Files</dt><dd><a href={githubUrl}>{githubLabel}</a></dd></div>
+      <div><dt class="label">Email</dt><dd><a href={mailto}>{SITE.email}</a></dd></div>
+    </dl>
+  </section>
+
+  <section id="projects" class="section" aria-labelledby="projects-heading">
+    <div class="section-head">
+      <h2 id="projects-heading">Projects</h2>
+      <span class="label">{projects.length} {projects.length === 1 ? 'project' : 'projects'}</span>
+    </div>
+    {projects.length > 0 ? (
+      <div class="cards">
+        {projects.map((p, i) => <ProjectCard project={p} eager={i < 2} />)}
+      </div>
+    ) : (
+      <p class="empty">The first write-ups are on their way.</p>
+    )}
+  </section>
+
+  <AboutContact />
+</Base>

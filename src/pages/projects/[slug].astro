@@ -1,0 +1,115 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Comments from '../../components/Comments.astro';
+import { getProjects, accentFor, projectLabel, STATUS_LABEL, isoDate, repoLabel, type Project } from '../../lib/projects';
+import { SITE } from '../../site';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+interface Props { project: Project }
+const { project } = Astro.props;
+const { data } = project;
+const { Content, headings } = await render(project);
+
+const hero = data.hero ?? data.cover;
+const heroAlt = data.heroAlt ?? data.coverAlt;
+// Marker colours run lavender, pink, teal, peach, as on the artboard.
+const markerColors = ['lavender', 'pink', 'teal', 'peach'] as const;
+const sections = headings.filter((h) => h.depth === 2);
+const accent = accentFor(project);
+---
+<Base title={data.title} description={data.summary} image={hero.src} footerSpaced>
+  <div class="project-page">
+    <div class="page-head project-head">
+      <span class:list={['label', `c-${accent}`]}>{projectLabel(data.number)}</span>
+      <h1>{data.title}</h1>
+      <p>{data.summary}</p>
+    </div>
+
+    <dl class="details">
+      <div class="details-grid">
+        <div>
+          <dt class="label-sm">Status</dt>
+          <dd class="status"><span class:list={['dot', data.status]} aria-hidden="true"></span>{STATUS_LABEL[data.status]}</dd>
+        </div>
+        <div>
+          <dt class="label-sm">Updated</dt>
+          <dd><time datetime={isoDate(data.updated)}>{isoDate(data.updated)}</time></dd>
+        </div>
+        <div>
+          <dt class="label-sm">Files</dt>
+          <dd>{data.repo ? <a href="#files">GitHub ↗</a> : 'Soon'}</dd>
+        </div>
+        <div>
+          <dt class="label-sm">License</dt>
+          <dd>{data.license ?? '—'}</dd>
+        </div>
+      </div>
+    </dl>
+
+    <figure class="hero-figure">
+      <div class="hero-photo">
+        <Image src={hero} alt={heroAlt} widths={[720, 1280, 1920, 2560]} sizes="(min-width: 1376px) 1280px, 100vw" loading="eager" fetchpriority="high" />
+        {data.callouts.map((c, i) => (
+          <span
+            class:list={['marker', `bg-${markerColors[i % markerColors.length]}`]}
+            style={`left: ${c.x}%; top: ${c.y}%`}
+            aria-hidden="true"
+          >{i + 1}</span>
+        ))}
+      </div>
+      {data.callouts.length > 0 && (
+        <figcaption>
+          {data.callouts.map((c, i) => (
+            <span><span class:list={['num', `c-${markerColors[i % markerColors.length]}`]}>{i + 1}</span>{c.label}</span>
+          ))}
+        </figcaption>
+      )}
+    </figure>
+
+    <div class="project-body">
+      <article class="project-article">
+        <div class="prose">
+          <Content />
+        </div>
+
+        <section id="files" class="files-block">
+          <h2>Files</h2>
+          {data.repo ? (
+            <a class="files-link" href={data.repo}>
+              <span>{repoLabel(data.repo)}</span>
+              <span class="label-note">{data.license ?? 'Source'} ↗</span>
+            </a>
+          ) : (
+            <p class="files-none">The files for this project aren't published yet.</p>
+          )}
+        </section>
+
+        {data.buyUrl && (
+          <section class="want-one">
+            <div>
+              <h2>Want one?</h2>
+              <p>{SITE.company.name} sells a built and tested version.</p>
+            </div>
+            <a class="btn-buy" href={data.buyUrl}>Buy it here ↗</a>
+          </section>
+        )}
+
+        <Comments />
+      </article>
+
+      {sections.length > 0 && (
+        <nav class="toc" aria-label="On this page">
+          <span class="label-sm">On this page</span>
+          {sections.map((h) => <a href={`#${h.slug}`}>{h.text}</a>)}
+          <a href="#files">Files</a>
+        </nav>
+      )}
+    </div>
+  </div>
+</Base>
