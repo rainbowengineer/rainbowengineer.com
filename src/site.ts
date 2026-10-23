@@ -20,7 +20,7 @@ export const SITE = {
     repo: 'rainbowengineer/rainbowengineer.com',
     repoId: 'R_kgDOVUXqTQ',
     category: 'Comments',
-    categoryId: '', // from giscus.app once Discussions and the giscus app are set up
+    categoryId: 'DIC_kwDOVUXqTc4DJZcF', // from giscus.app once Discussions and the giscus app are set up
   },
 } as const;
 
